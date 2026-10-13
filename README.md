@@ -11,11 +11,13 @@ This weekend project started as a simple **Caesar Cipher**, where every characte
 
 To prevent this, I implemented a **character substitution** system. A random sequence of length $V$ (vocabulary size) is generated, containing unique numbers between $0$ and $V-1$. This is then used to map every input $x$ to an output using that random permutation rather than a static $S$. Also, the amount of possible combinations for the key changes from $V$ to $V!$
 
-</br>
+<br>
+
 $$
 f(x) = map(x)
 $$
-</br>
+
+<br>
 
 ## Shifting
 
@@ -58,12 +60,13 @@ pow(idx, self.deltas[0], self.warp)
 
 The shift is applied before substituting the character. Using the table above (with the _"ABCCD"_ example) and $\delta_0 = 1,\;\delta_1 = 0,\;\delta_2 = 1,\;\delta_3 = 0\;$ (for simplicity), _"HELLO"_ becomes _"BDLEA"_, successfully masking any repeated characters. Using this on a full vocabulary (such as ASCII's 95 printable characters) creates a much more random output.
 
-</br>
+<br>
+
 $$
 f(x) = map(x + S)
 $$
 
-</br>
+<br>
 
 ## Layers
 
@@ -71,7 +74,8 @@ Despite **shifting** and **substitutions** masking the original plaintext and it
 
 In this system, $x$ is passed sequentially through multiple Shift-Substitute blocks, where the output of one block is the input for the next. This creates an intermediary state where the final output relies on the cumulative transformation of every layer prior to it. Typically, stacking substitution layers causes all the mappings to collapse into a single map. But much like non-linear activations in a Neural Network, the shifts prevent the linear mapping layers from collapsing.
 
-</br>
+<br>
+
 $$
 l_n(x) = map_n(x + S_n)
 $$
@@ -79,7 +83,8 @@ $$
 $$
 f(x) = l_n \circ l_{n-1} \circ \cdots \circ l_1 \circ l_0(x)
 $$
-</br>
+
+<br>
 
 ## Initialisation Vector (IV)
 
