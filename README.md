@@ -43,22 +43,22 @@ If the above mapping is used as an example, _"HELLO"_ would become _"ABCCD"_, re
 **Shifting** prevents this via a $delta$ factor $(\delta)$, consisting of $4$ numbers, each between $2$ and $V-1$ inclusive.
 
 $$
-\delta_0,\;\delta_1,\;\delta_2,\;\delta_3
+\delta_0, \delta_1, \delta_2, \delta_3
 $$
 
 The shift for a character is calculated as shown below, where $I$ is the character's absolute position in the text, $V$ is the vocabulary size, and $x_{-1}$ is the previous character:
 
 $$
-S \;=\; \left(I^{\delta_0} \bmod V \;+\; \delta_1 \cdot (I \bmod V) \;+\; \delta_2 \;+\; x_{-1} \cdot \delta_3\right) \bmod V   
+S  = \left(I^{\delta_0} \bmod V + \delta_1 \cdot (I \bmod V) + \delta_2 + x_{-1} \cdot \delta_3\right) \bmod V   
 $$
 
-$I^{\delta_0}$ introduces non-linearity, while the constant $\delta_2$ ensures $S>0$ when $I=0$ and $x_{-1}=0$ (no prior character). $\;x_{-1} \cdot \delta_3$ makes the shift dependent on the previous character, meaning that any change to a character earlier in the sequence propagates throughout the rest. This also lets the IV (explained later) seed the chain, so identical plaintexts map to different outputs. Additionally, it prevents repeated shift patterns, as the output now depends on the actual character values rather than purely on $I$ and $\delta$. $\;I^{\delta_0}$ is calculated using modular exponentiation, since evaluating the full power for a large $I$ would produce a uselessly large intermediate.
+$I^{\delta_0}$ introduces non-linearity, while the constant $\delta_2$ ensures $S>0$ when $I=0$ and $x_{-1}=0$ (no prior character). $x_{-1} \cdot \delta_3$ makes the shift dependent on the previous character, meaning that any change to a character earlier in the sequence propagates throughout the rest. This also lets the IV (explained later) seed the chain, so identical plaintexts map to different outputs. Additionally, it prevents repeated shift patterns, as the output now depends on the actual character values rather than purely on $I$ and $\delta$. $I^{\delta_0}$ is calculated using modular exponentiation, since evaluating the full power for a large $I$ would produce a uselessly large intermediate.
 
 ```python
 pow(idx, self.deltas[0], self.warp)
 ```
 
-The shift is applied before substituting the character. Using the table above (with the _"ABCCD"_ example) and $\delta_0 = 1,\;\delta_1 = 0,\;\delta_2 = 1,\;\delta_3 = 0\;$ (for simplicity), _"HELLO"_ becomes _"BDLEA"_, successfully masking any repeated characters. Using this on a full vocabulary (such as ASCII's 95 printable characters) creates a much more random output.
+The shift is applied before substituting the character. Using the table above (with the _"ABCCD"_ example) and $\delta_0 = 1,\delta_1 = 0,\delta_2 = 1,\delta_3 = 0$ (for simplicity), _"HELLO"_ becomes _"BDLEA"_, successfully masking any repeated characters. Using this on a full vocabulary (such as ASCII's 95 printable characters) creates a much more random output.
 
 <br>
 
